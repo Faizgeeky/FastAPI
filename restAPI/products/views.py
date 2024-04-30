@@ -1,12 +1,17 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+# from django.http import JsonResponse
 from products.models import Product
 import json
 from django.forms.models import model_to_dict
-# Create your views here.
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from products.serializers import ProductSerializer
 
-
+@api_view(['GET','POST'])
 def home(request):
+    '''
+    DRF API VIEW
+    '''
     model_data = Product.objects.all().order_by("?").first()
     data = {}
     # Method 1 manual
@@ -17,10 +22,18 @@ def home(request):
     #     data['price'] = model_data.price
     # print("Model data is ", model_data.title)
 
-    # Method model_to_dict
-    if model_data:
-        data = model_to_dict(model_data, fields=['id','title', 'price'])
-    return JsonResponse(data)
+    # Method 3 model_to_dict
+    # if model_data:
+    #     data = model_to_dict(model_data, fields=['id','title', 'price', 'sale_price'])
+    
+    # Method 3 Serializers
+    instance = model_data
+
+    if instance:
+        data =  ProductSerializer(instance).data
+
+
+    return Response(data)
 
 
 def addProduct(request):
@@ -36,4 +49,4 @@ def addProduct(request):
     except:
         pass
     print("data is ", data)
-    return JsonResponse({'message':message})
+    return Response({'message':message})
