@@ -31,6 +31,15 @@ import requests
 # print("result we get here is ", get_response.json())
 
 # Delete Product
-endpoint = "http://127.0.0.1:8000/api/delete-product/4"
-get_response = requests.delete(endpoint, json={'title':" fresh?",'price':19.5}, params={'pk':1})
-print(get_response.status_code,get_response.status_code==204 )
+# endpoint = "http://127.0.0.1:8000/api/delete-product/4"
+# get_response = requests.delete(endpoint, json={'title':" fresh?",'price':19.5}, params={'pk':1})
+# print(get_response.status_code,get_response.status_code==204 )
+
+
+
+# Mixins 
+
+# List Product
+endpoint = "http://127.0.0.1:8000/api/products/5/"
+get_response = requests.post(endpoint, json={"title":"Latest Product"})
+print("result we get here is ", get_response.json())
