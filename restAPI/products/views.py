@@ -52,10 +52,52 @@ from rest_framework import generics
 
 
 
-# Generic API View
+# Generic RetriveAPI View 
+#this will return data without handling or sending back the response 
 class ProductDetailAPIView(generics.RetrieveAPIView):
     print("view test 1")
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+    def perform_create(self, serializer):
+        serializer.sa
 
+# Generic CreateAPI View
+class ProductCreateAPIView(generics.CreateAPIView):
+    print("view test 2")
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+product_create_view = ProductCreateAPIView.as_view()
+
+#Genericc ListAPIView and ListcreateAPIView
+class ProductListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+# list view 
+class ProductListAPIView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+# Update API View 
+class ProductUpdateAPIView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if not instance.content:
+            instance.content = instance.title
+
+
+class ProductDestroyAPIView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        
