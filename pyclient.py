@@ -40,6 +40,6 @@ import requests
 # Mixins 
 
 # List Product
-endpoint = "http://127.0.0.1:8000/api/products/5/"
-get_response = requests.post(endpoint, json={"title":"Latest Product"})
-print("result we get here is ", get_response.json())
+# endpoint = "http://127.0.0.1:8000/api/products/5/"
+# get_response = requests.get(endpoint, json={"title":"Latest Product"})
+# print("result we get here is ", get_response.json())
