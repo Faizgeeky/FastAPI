@@ -6,7 +6,7 @@ from django.forms.models import model_to_dict
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from products.serializers import ProductSerializer
-from rest_framework import generics
+from rest_framework import generics , mixins
 
 
 
@@ -40,15 +40,16 @@ from rest_framework import generics
 
 #     return Response(data)
 
+
 # #  Validation using Serializer
-# @api_view(['POST'])
-# def addProduct(request):
-#     serializer = ProductSerializer(data = request.data)
-#     # Use raise expceptions to handle invalid or error in robust way
-#     if serializer.is_valid(raise_exception=True):
-#         instance = serializer.save()
-#         print("Instance is here", instance)
-#         return Response(serializer.data)
+@api_view(['POST'])
+def addProduct(request):
+    serializer = ProductSerializer(data = request.data)
+    # Use raise expceptions to handle invalid or error in robust way
+    if serializer.is_valid(raise_exception=True):
+        instance = serializer.save()
+        print("Instance is here", instance)
+        return Response(serializer.data)
 
 
 
@@ -100,4 +101,35 @@ class ProductDestroyAPIView(generics.DestroyAPIView):
 
     def perform_destroy(self, instance):
         super().perform_destroy(instance)
+        
+
+#  Mixins in DRF 
+# Provide multiple mixins if required like following example
+class ProductMixinView(mixins.CreateModelMixin ,mixins.ListModelMixin , mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def get(self , request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    # def post(self, request, *args, **kwargs):
+    #     print("Args",args, kwargs)
+    #     pk = kwargs.get("pk")
+    #     print("pk is", pk)
+    #     if pk is not None:
+    #         return self.retrieve(request, *args, **kwargs)
+        
+    #     return self.list(request)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+    
+    def perform_create(self, serializer):
+        title =  serializer.validated_data.get('title')
+        content = serializer.validated_data.get('content')
+        if content is None:
+            content = title
+        serializer.save(content=content)
+        
         
